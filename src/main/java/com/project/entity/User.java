@@ -8,7 +8,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Table(name = "user")
+@Table(name = "app_user")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,6 +23,8 @@ public class User {
     @Basic
     @Column(name = "password")
     private String password;
+
+    public User(){}
 
     @Override
     public boolean equals(Object o) {

@@ -32,7 +32,6 @@ public class UserController {
             UserDto userDto = userService.createUser(newUser);
             return new ResponseEntity<>(userDto, HttpStatus.OK);
         } catch (RuntimeException e) {
-            // Log the exception for monitoring purposes
             logger.error("Error processing request", new Exception());
             return new ResponseEntity<>("Error registering user", HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -45,7 +44,6 @@ public class UserController {
             List<UserDto> users = userService.getAllUsers();
             return new ResponseEntity<>(users, HttpStatus.OK);
         } catch (RuntimeException e) {
-            // Log the exception for monitoring purposes
             logger.error("Error processing request", new Exception());
             return new ResponseEntity<>("Error fetching users", HttpStatus.INTERNAL_SERVER_ERROR);
         }

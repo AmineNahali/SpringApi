@@ -6,6 +6,7 @@ import com.project.entity.User;
 import com.project.repository.IUserRepository;
 import com.project.services.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,12 +21,10 @@ public class UserServiceImpl implements IUserService {
 
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
-    private final IUserRepository userRepository;
+    static final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Autowired
-    public UserServiceImpl(IUserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    IUserRepository userRepository;
 
     @Transactional
     @Override
@@ -33,6 +32,7 @@ public class UserServiceImpl implements IUserService {
         validateUser(userSignUpDto);
 
         if (!(userRepository.findByUserEmail(userSignUpDto.getEmail()).isEmpty() && userRepository.findByUserUsername(userSignUpDto.getUsername()).isEmpty())) {
+            logger.error("Duplicate username or email.");
             throw new RuntimeException("Duplicate username or email.");
         }
 
@@ -57,7 +57,9 @@ public class UserServiceImpl implements IUserService {
         User newUser = new User();
         newUser.setEmail(userSignUpDto.getEmail());
         newUser.setUsername(userSignUpDto.getUsername());
-        newUser.setPassword(userSignUpDto.getPassword()); // Consider hashing password here
+        newUser.setPassword(passwordEncoder.encode(userSignUpDto.getPassword())); // hashing password
+        newUser.setEnabled(true);
+        newUser.setRole("USER");
         return newUser;
     }
 
